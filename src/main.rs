@@ -45,6 +45,8 @@ fn main() {
 
     println!("");
     print_history(&guesses);
+    println!("");
+    print_history(&guesses);
 }
 
 
