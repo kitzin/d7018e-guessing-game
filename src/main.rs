@@ -68,7 +68,10 @@ fn read_guess() -> Result<u32, String> {
 }
 
 fn print_history(his: &HashMap<u32, String>) {
-    for (try, guess) in his.iter() {
-        println!("Guess #{} was {}", try, guess);
+    let mut guesses = his.len();
+    while guesses > 0 && guesses != his.len() - 3 {
+        let guess = guesses as u32;
+        println!("Guess #{} was {}", guess, his[&guess]);
+        guesses -= 1;
     }
 }
