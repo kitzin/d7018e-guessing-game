@@ -12,7 +12,6 @@ fn main() {
     // histroy vector
     let mut guesses: Vec<(u32, String)> = Vec::new();
 
-    println!("{}", secret);
     println!("======== GUESSING GAME ========");
     loop {
     
