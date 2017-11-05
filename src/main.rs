@@ -5,12 +5,14 @@ use rand::Rng;
 use std::cmp::Ordering;
 
 fn main() {
-    println!("======== GUESSING GAME ========");
-
     // Generating a random number
     let secret = rand::thread_rng().gen_range(1, 101);
     let mut tries = 0;
 
+    // histroy vector
+    let mut guesses: Vec<(u32, String)> = Vec::new();
+
+    println!("======== GUESSING GAME ========");
     loop {
     
         println!("Guess: ");
@@ -25,16 +27,24 @@ fn main() {
         // increment number of tries
         tries += 1;
 
+
+        // Append to history
+        guesses.push((tries, String::from(guess.to_string())));
+
         match guess.cmp(&secret) {
             Ordering::Less      => println!("Too small!"),
             Ordering::Greater   => println!("Too big!"),
             Ordering::Equal     => {
+                println!("");
                 println!("Yay you got it!");
                 println!("It only took you {} tries.", tries);
                 break;
             }
         }
     }
+
+    println!("");
+    print_history(&guesses);
 }
 
 
@@ -52,5 +62,11 @@ fn read_guess() -> Result<u32, String> {
     match guess.trim().parse() {
         Ok(num) => Ok(num),
         Err(_)  => Err(String::from("Not a number")),
+    }
+}
+
+fn print_history(his: &Vec<(u32, String)>) {
+    for h in his.iter() {
+        println!("Guess #{} was {}", h.0, h.1);
     }
 }
