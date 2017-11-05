@@ -3,6 +3,7 @@ extern crate rand;
 use std::io;
 use rand::Rng;
 use std::cmp::Ordering;
+use std::collections::HashMap;
 
 fn main() {
     // Generating a random number
@@ -10,7 +11,7 @@ fn main() {
     let mut tries = 0;
 
     // histroy vector
-    let mut guesses: Vec<(u32, String)> = Vec::new();
+    let mut guesses: HashMap<u32, String> = HashMap::new();
 
     println!("{}", secret);
     println!("======== GUESSING GAME ========");
@@ -30,7 +31,7 @@ fn main() {
 
 
         // Append to history
-        guesses.push((tries, String::from(guess.to_string())));
+        guesses.insert(tries, String::from(guess.to_string()));
 
         match guess.cmp(&secret) {
             Ordering::Less      => println!("Too small!"),
@@ -66,12 +67,8 @@ fn read_guess() -> Result<u32, String> {
     }
 }
 
-fn print_history(his: &Vec<(u32, String)>) {
-    for (i, h) in his.iter().rev().enumerate() {
-        if i > 2 {
-            break;
-        }
-
-        println!("Guess #{} was {}", h.0, h.1);
+fn print_history(his: &HashMap<u32, String>) {
+    for (try, guess) in his.iter() {
+        println!("Guess #{} was {}", try, guess);
     }
 }
