@@ -12,6 +12,7 @@ fn main() {
     // histroy vector
     let mut guesses: Vec<(u32, String)> = Vec::new();
 
+    println!("{}", secret);
     println!("======== GUESSING GAME ========");
     loop {
     
@@ -45,8 +46,6 @@ fn main() {
 
     println!("");
     print_history(&guesses);
-    println!("");
-    print_history(&guesses);
 }
 
 
@@ -68,7 +67,11 @@ fn read_guess() -> Result<u32, String> {
 }
 
 fn print_history(his: &Vec<(u32, String)>) {
-    for h in his.iter() {
+    for (i, h) in his.iter().rev().enumerate() {
+        if i > 2 {
+            break;
+        }
+
         println!("Guess #{} was {}", h.0, h.1);
     }
 }
