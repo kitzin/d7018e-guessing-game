@@ -147,7 +147,7 @@ fn main() {
 
 
 
-unsafe fn codgen(seed: &mut u32) -> u32 {
+fn codgen(seed: &mut u32) -> u32 {
     //static mut SEED: u32 = 0x0e0657c1;
     let n: u32 = seed.count_zeros();
     let x: u32 = seed.rotate_left(30);
@@ -162,9 +162,7 @@ fn decode(wordarr: &[u32], bytearr: &mut [u8], mut seed: &mut u32) -> u32 {
     let x: u32;
     let y: u32;
 
-    unsafe {
-        x = !codgen(&mut seed);
-    }
+    x = !codgen(&mut seed);
 
     if wordarr[0] == 0 {
         x
@@ -173,10 +171,7 @@ fn decode(wordarr: &[u32], bytearr: &mut [u8], mut seed: &mut u32) -> u32 {
         y = decode(&wordarr[1..], &mut bytearr[1..], &mut seed);
         m = x.wrapping_sub(y).wrapping_sub(wordarr[0]);
         bytearr[0] = ((((255 << 13) as u32) & m) >> 13) as u8;
-        let cg: u32;
-        unsafe {
-            cg = codgen(&mut seed);
-        }
+        let cg = codgen(&mut seed);
         r = (-(cg as i32)) as u32;
         r.wrapping_add(x).wrapping_add(y).wrapping_add(m).wrapping_add(5)
     }
