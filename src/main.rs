@@ -1,7 +1,7 @@
 use std::str;
 
-fn main() {
-    let encrypted: [u32; 132] = [
+static mut SEED: u32 = 0x0e0657c1;
+static CODED_DATA: [u32; 132] = [
         0x015e7a47,
         0x2ef84ebb,
         0x177a8db4,
@@ -136,46 +136,47 @@ fn main() {
         0,
     ];
 
-    let mut data: [u8; 150] = [0; 150];
-    let mut seed: u32 = 0x0e0657c1;
+static mut UNCODED_DATA: [u8; 150] = [0; 150];
 
-    decode(&encrypted, &mut data, &mut seed);
+fn main() {
 
-    let decoded = str::from_utf8(&data).unwrap();
-    println!("{}", decoded);
+    unsafe {
+        decode(&CODED_DATA, &mut UNCODED_DATA);
+        let decoded = str::from_utf8(&UNCODED_DATA).unwrap();
+        println!("{}", decoded);
+    }
 }
 
 
 
-unsafe fn codgen(seed: &mut u32) -> u32 {
-    //static mut SEED: u32 = 0x0e0657c1;
-    let n: u32 = seed.count_zeros();
-    let x: u32 = seed.rotate_left(30);
-    let y: u32 = ((*seed as i32) >> 6) as u32;
-    *seed = x ^ y ^ n;
-    *seed ^ 0x464b713e
+unsafe fn codgen() -> u32 {
+    let n: u32 = SEED.count_zeros();
+    let x: u32 = SEED.rotate_left(30);
+    let y: u32 = ((SEED as i32) >> 6) as u32;
+    SEED = x ^ y ^ n;
+    SEED ^ 0x464b713e
 }
 
-fn decode(wordarr: &[u32], bytearr: &mut [u8], mut seed: &mut u32) -> u32 {
+fn decode(wordarr: &[u32], bytearr: &mut [u8]) -> u32 {
     let m: u32;
     let r: u32;
     let x: u32;
     let y: u32;
 
     unsafe {
-        x = !codgen(&mut seed);
+        x = !codgen();
     }
 
     if wordarr[0] == 0 {
         x
     }
     else {
-        y = decode(&wordarr[1..], &mut bytearr[1..], &mut seed);
+        y = decode(&wordarr[1..], &mut bytearr[1..]);
         m = x.wrapping_sub(y).wrapping_sub(wordarr[0]);
         bytearr[0] = ((((255 << 13) as u32) & m) >> 13) as u8;
         let cg: u32;
         unsafe {
-            cg = codgen(&mut seed);
+            cg = codgen();
         }
         r = (-(cg as i32)) as u32;
         r.wrapping_add(x).wrapping_add(y).wrapping_add(m).wrapping_add(5)
