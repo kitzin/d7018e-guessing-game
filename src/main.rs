@@ -1,7 +1,7 @@
 use std::str;
 
 static mut SEED: u32 = 0x0e0657c1;
-static CODED_DATA: [u32; 132] = [
+static CODED_DATA: [u32; 131] = [
         0x015e7a47,
         0x2ef84ebb,
         0x177a8db4,
@@ -133,7 +133,7 @@ static CODED_DATA: [u32; 132] = [
         0xdf47dfbb, 
         0x09a1c6c8, 
         0xc2e41061, 
-        0,
+//        0,
     ];
 
 static mut UNCODED_DATA: [u8; 150] = [0; 150];
